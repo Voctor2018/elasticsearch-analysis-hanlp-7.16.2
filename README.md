@@ -1,4 +1,9 @@
 # elasticsearch-analysis-hanlp
+
+### 写在最前
+*感谢：https://github.com/KennFalcon/elasticsearch-analysis-hanlp.git 的作者，原仓库基于7.10.2版本，
+      基于原仓库修改为7.14.2版本*
+
 HanLP Analyzer for ElasticSearch
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
