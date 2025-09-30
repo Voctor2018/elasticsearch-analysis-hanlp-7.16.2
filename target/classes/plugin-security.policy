@@ -21,7 +21,10 @@ grant {
   // HanLP data directories
   permission java.io.FilePermission "data/dictionary/CoreNatureDictionary.tr.txt", "read";
 
-   // 授予对 src/main/java 目录的读取权限
+  // 允许插件目录下的所有文件可读
+  permission java.io.FilePermission "plugins/hanlp-plugin/data/-", "read";
+
+  // 授予对 src/main/java 目录的读取权限
   permission java.io.FilePermission "src/main/java", "read";
 
   // needed because of problems in unbound LDAP library

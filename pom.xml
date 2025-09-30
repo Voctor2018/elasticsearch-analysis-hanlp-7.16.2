@@ -56,7 +56,7 @@
     <dependency>
       <artifactId>elasticsearch</artifactId>
       <groupId>org.elasticsearch</groupId>
-      <version>7.14.2</version>
+      <version>7.16.2</version>
     </dependency>
     <dependency>
       <artifactId>httpclient</artifactId>
@@ -91,11 +91,11 @@
       <optional>true</optional>
       <version>1.18.24</version>
     </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.13.3</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--      <artifactId>jackson-databind</artifactId>-->
+<!--      <version>2.13.3</version>-->
+<!--    </dependency>-->
     <dependency>
       <artifactId>hamcrest-core</artifactId>
       <groupId>org.hamcrest</groupId>
@@ -140,8 +140,8 @@
     </elasticsearch.assembly.descriptor>
     <elasticsearch.plugin.classname>org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin
     </elasticsearch.plugin.classname>
-    <elasticsearch.plugin.name>hanlp plugin</elasticsearch.plugin.name>
-    <elasticsearch.version>7.14.2</elasticsearch.version>
+    <elasticsearch.plugin.name>hanlp-plugin</elasticsearch.plugin.name>
+    <elasticsearch.version>7.16.2</elasticsearch.version>
     <java.source.version>8</java.source.version>
     <java.target.version>8</java.target.version>
     <maven.compiler.source>8</maven.compiler.source>
@@ -151,5 +151,5 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
-  <version>7.14.2</version>
+  <version>7.16.2</version>
 </project>
