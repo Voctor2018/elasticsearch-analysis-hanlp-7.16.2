@@ -27,10 +27,6 @@ public class Dictionary {
      * 词典实例
      */
     private static Dictionary singleton;
-    /**
-     * Hanlp远程词典配置文件名
-     */
-    private static final String REMOTE_CONFIG_FILE_NAME = "hanlp-remote.xml";
 
     private static final ScheduledExecutorService pool = Executors.newScheduledThreadPool(1, new ThreadFactory() {
 
