@@ -27,8 +27,14 @@ public class RemoteDictConfig {
 
     private static final Logger logger = LogManager.getLogger(RemoteDictConfig.class);
 
+    /**
+     * 远程扩展字典
+     */
     private static final String REMOTE_EXT_DICT = "remote_ext_dict";
 
+    /**
+     * 远程扩展停止词字典
+     */
     private static final String REMOTE_EXT_STOP = "remote_ext_stopwords";
 
     private final Properties props;

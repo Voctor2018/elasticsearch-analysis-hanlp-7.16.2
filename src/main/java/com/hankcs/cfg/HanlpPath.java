@@ -9,9 +9,10 @@ public class HanlpPath {
     public static String PerceptronPOSModelPath = "plugins/analysis-hanlp/data/model/perceptron/pku1998/pos.bin";
     public static String PerceptronNERModelPath = "plugins/analysis-hanlp/data/model/perceptron/pku1998/ner.bin";
 
-    public static String hanlpPropertiesPath = "plugins/analysis-hanlp/config/hanlp.properties";
-//远程配置文件
-    public static String remoteConfigFileName = "plugins/analysis-hanlp/config/hanlp-remote.xml";
+    // 安装后读取配置文件的路径
+    public static String hanlpPropertiesPath = "config/analysis-hanlp/hanlp.properties";
+    // 远程配置文件
+    public static String remoteConfigFileName = "config/analysis-hanlp/hanlp-remote.xml";
 
 
 }

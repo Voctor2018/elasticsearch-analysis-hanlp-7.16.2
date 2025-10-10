@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.AccessController;
@@ -74,23 +75,34 @@ public class ExtMonitor implements Runnable {
     private void reloadProperty() {
         Properties p = new Properties();
         try {
+            // 1. 获取类加载器（在安全上下文下执行）
             ClassLoader loader = AccessController.doPrivileged(
                     (PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader()
             );
             if (loader == null) {
                 loader = HanLP.Config.class.getClassLoader();
             }
+
+            // 2. 获取 hanlp.properties 文件路径（可能是用户配置的路径）
             Path path = Paths.get(AccessController.doPrivileged((PrivilegedAction<String>) () -> HanlpPath.hanlpPropertiesPath)).toAbsolutePath();
+
+            // 3. 加载默认配置（优先从 classpath 或者 Predefine.HANLP_PROPERTIES_PATH 指定路径读取）
            /* p.load(
                     new InputStreamReader(Predefine.HANLP_PROPERTIES_PATH == null
                             ? Objects.requireNonNull(loader.getResourceAsStream("config/hanlp.properties"))
                             : new FileInputStream(Predefine.HANLP_PROPERTIES_PATH), StandardCharsets.UTF_8)
             );*/
-            p.load( new InputStreamReader(new FileInputStream(path.toString()), StandardCharsets.UTF_8));
+
+            // 4. 再加载外部配置文件（覆盖默认值）
+            p.load( new InputStreamReader(Files.newInputStream(Paths.get(path.toString())), StandardCharsets.UTF_8));
+
+            // 5. 处理 root 配置
             String root = p.getProperty("root", "").replaceAll("\\\\", "/");
-            if (root.length() > 0 && !root.endsWith("/")) {
+            if (!root.isEmpty() && !root.endsWith("/")) {
                 root += "/";
             }
+
+            // 6. 处理 CustomDictionaryPath
             String[] pathArray = p.getProperty("CustomDictionaryPath", "data/dictionary/custom/CustomDictionary.txt").split(";");
             String prePath = root;
             for (int i = 0; i < pathArray.length; ++i) {
@@ -104,6 +116,8 @@ public class ExtMonitor implements Runnable {
                     }
                 }
             }
+
+            // 7. 更新 HanLP 全局配置
             AccessController.doPrivileged((PrivilegedAction) () -> HanLP.Config.CustomDictionaryPath = pathArray);
         } catch (Exception e) {
             logger.error("can not find hanlp.properties", e);
