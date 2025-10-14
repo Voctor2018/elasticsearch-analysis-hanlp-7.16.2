@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.core.PathUtils;
+import org.elasticsearch.common.io.PathUtils;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.analysis.AnalyzerProvider;
 import org.elasticsearch.index.analysis.HanLPAnalyzerProvider;
@@ -46,7 +46,8 @@ public class AnalysisHanLPPlugin extends Plugin implements AnalysisPlugin {
         if (home == null) {
             throw new IllegalStateException(Environment.PATH_HOME_SETTING.getKey() + " is not configured");
         } else {
-            Path configDir = PathUtils.get(home, "config", AnalysisHanLPPlugin.PLUGIN_NAME);
+            // PathUtils 在 6.8.x 下位于 org.elasticsearch.common.io.PathUtils
+            java.nio.file.Path configDir = PathUtils.get(home, "config", AnalysisHanLPPlugin.PLUGIN_NAME);
             Predefine.HANLP_PROPERTIES_PATH = configDir.resolve(CONFIG_FILE_NAME).toString();
             logger.debug("hanlp properties path: {}", Predefine.HANLP_PROPERTIES_PATH);
         }

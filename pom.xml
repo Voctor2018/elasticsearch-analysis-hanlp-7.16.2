@@ -56,7 +56,7 @@
     <dependency>
       <artifactId>elasticsearch</artifactId>
       <groupId>org.elasticsearch</groupId>
-      <version>7.16.2</version>
+      <version>6.8.23</version>
     </dependency>
     <dependency>
       <artifactId>httpclient</artifactId>
@@ -141,7 +141,7 @@
     <elasticsearch.plugin.classname>org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin
     </elasticsearch.plugin.classname>
     <elasticsearch.plugin.name>analysis-hanlp</elasticsearch.plugin.name>
-    <elasticsearch.version>7.16.2</elasticsearch.version>
+    <elasticsearch.version>6.8.23</elasticsearch.version>
     <java.source.version>8</java.source.version>
     <java.target.version>8</java.target.version>
     <maven.compiler.source>8</maven.compiler.source>
@@ -151,5 +151,5 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
-  <version>7.16.2</version>
+  <version>6.8.23</version>
 </project>

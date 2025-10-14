@@ -22,7 +22,7 @@ grant {
   permission java.io.FilePermission "data/dictionary/CoreNatureDictionary.tr.txt", "read";
 
   // 允许插件目录下的所有文件可读
-  permission java.io.FilePermission "plugins/analysis-hanlp/data/-", "read";
+  permission java.io.FilePermission "plugins/analysis-hanlp/data/-", "read,write,delete";
 
   // 授予对 src/main/java 目录的读取权限
   permission java.io.FilePermission "src/main/java", "read";
