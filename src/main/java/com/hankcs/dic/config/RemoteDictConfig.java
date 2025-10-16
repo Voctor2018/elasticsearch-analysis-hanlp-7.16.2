@@ -1,6 +1,9 @@
 package com.hankcs.dic.config;
 
 import com.hankcs.dic.Dictionary;
+import com.hankcs.dic.RemoteDictLoader;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.core.internal.io.IOUtils;
@@ -8,6 +11,7 @@ import org.elasticsearch.core.internal.io.IOUtils;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -36,6 +40,10 @@ public class RemoteDictConfig {
      * 远程扩展停止词字典
      */
     private static final String REMOTE_EXT_STOP = "remote_ext_stopwords";
+
+
+    private  HikariDataSource dataSource = null;
+
 
     private final Properties props;
 
@@ -73,12 +81,18 @@ public class RemoteDictConfig {
     }
 
     public List<String> getRemoteExtDictionaries() {
-        List<String> list = getRemoteExtFiles(REMOTE_EXT_DICT);
-        return list;
+//        return getRemoteExtFiles(REMOTE_EXT_DICT);
+        return getRemoteExtFromSql("DICT");
     }
 
     public List<String> getRemoteExtStopWordDictionaries() {
-        return getRemoteExtFiles(REMOTE_EXT_STOP);
+//        return getRemoteExtFiles(REMOTE_EXT_STOP);
+        return getRemoteExtFromSql("STOP");
+    }
+
+    private List<String> getRemoteExtFromSql(String key) {
+        RemoteDictLoader loader = new RemoteDictLoader();
+        return loader.getRemoteExtWords(key);
     }
 
     private List<String> getRemoteExtFiles(String key) {
@@ -90,7 +104,6 @@ public class RemoteDictConfig {
             for (String filePath : filePaths) {
                 if (filePath != null && !"".equals(filePath.trim())) {
                     remoteExtFiles.add(filePath);
-
                 }
             }
         }

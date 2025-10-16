@@ -1,21 +1,9 @@
 package test;
 
-import com.hankcs.cfg.HanlpPath;
+import com.hankcs.dic.RemoteDictLoader;
 import com.hankcs.hanlp.corpus.io.ByteArray;
-import com.hankcs.hanlp.corpus.io.IOUtil;
-import com.hankcs.hanlp.model.crf.CRFLexicalAnalyzer;
-import com.hankcs.hanlp.model.crf.CRFModel;
-import com.hankcs.hanlp.model.crf.CRFPOSTagger;
-import com.hankcs.hanlp.model.crf.CRFTagger;
-import com.hankcs.hanlp.model.perceptron.common.TaskType;
-import com.hankcs.hanlp.model.perceptron.model.LinearModel;
-import com.hankcs.hanlp.model.perceptron.tagset.CWSTagSet;
-import com.hankcs.hanlp.model.perceptron.tagset.TagSet;
-import com.hankcs.model.PerceptronCWSInstance;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.util.List;
 
 public class CompileCRFModel {
     public static void main(String[] args) throws Exception {
@@ -32,7 +20,14 @@ public class CompileCRFModel {
         // 加载模型测试
         // LinearModel model4 = new LinearModel(output);
         // 打印模型前20行
-        prinent(output);
+//        prinent(output);
+
+        RemoteDictLoader loader = new RemoteDictLoader();
+        List<String> dictWords = loader.getRemoteExtWords("DICT");
+
+        System.out.println("=== 从数据库加载的词条 ===");
+        dictWords.forEach(System.out::println);
+
 
         System.out.println("测试完毕");
     }
