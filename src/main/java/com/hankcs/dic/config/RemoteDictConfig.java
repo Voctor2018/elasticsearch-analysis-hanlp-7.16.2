@@ -1,16 +1,27 @@
 package com.hankcs.dic.config;
 
 import com.hankcs.dic.Dictionary;
-import com.hankcs.dic.RemoteDictLoader;
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.elasticsearch.core.internal.io.IOUtils;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +51,10 @@ public class RemoteDictConfig {
      * 远程扩展停止词字典
      */
     private static final String REMOTE_EXT_STOP = "remote_ext_stopwords";
+    /**
+     * 远程拓展词版本号
+     */
+    private static final String REMOTE_EXT_VERSION = "remote_ext_version_check";
 
 
     private  HikariDataSource dataSource = null;
@@ -81,20 +96,53 @@ public class RemoteDictConfig {
     }
 
     public List<String> getRemoteExtDictionaries() {
-//        return getRemoteExtFiles(REMOTE_EXT_DICT);
-        return getRemoteExtFromSql("DICT");
+        // 从远端接口或者文件获取词库
+        return getRemoteExtFiles(REMOTE_EXT_DICT);
+        // 从mysql数据库动态获取词库
+//        return getRemoteExtFromSql("DICT");
     }
 
     public List<String> getRemoteExtStopWordDictionaries() {
-//        return getRemoteExtFiles(REMOTE_EXT_STOP);
-        return getRemoteExtFromSql("STOP");
+        // 从远端接口或者文件获取词库
+        return getRemoteExtFiles(REMOTE_EXT_STOP);
+        // 从mysql数据库动态获取词库
+//        return getRemoteExtFromSql("STOP");
     }
 
-    private List<String> getRemoteExtFromSql(String key) {
-        RemoteDictLoader loader = new RemoteDictLoader();
-        return loader.getRemoteExtWords(key);
+    /// 获取远程词库版本号
+//    public  String  getRemoteExtDictVersion(int versionId) {
+//        // 切换至远程接口，es插件中不支持查数据库
+//        RemoteDictLoader loader = new RemoteDictLoader();
+//        return loader.getVersion(versionId);
+//    }
+//
+//    // mysql动态加载词库
+//    private List<String> getRemoteExtFromSql(String key) {
+//        RemoteDictLoader loader = new RemoteDictLoader();
+//        return loader.getRemoteExtWords(key);
+//    }
+
+    // 获取版本号
+    public String getRemoteVersion() {
+        String versionUrl = getProperty(REMOTE_EXT_VERSION);
+        return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
+            try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+                HttpGet get = new HttpGet(versionUrl);
+                try (CloseableHttpResponse response = httpclient.execute(get)) {
+                    if (response != null && response.getEntity() != null) {
+                        String version = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+                        logger.info("remote version: {}", version);
+                        return version.trim();
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("can not get remote version", e);
+            }
+            return "default";
+        });
     }
 
+    // 加载远程词库
     private List<String> getRemoteExtFiles(String key) {
         List<String> remoteExtFiles = new ArrayList<>(2);
         String remoteExtStopWordDictCfg = getProperty(key);

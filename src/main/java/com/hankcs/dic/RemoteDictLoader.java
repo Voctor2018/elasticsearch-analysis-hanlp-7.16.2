@@ -54,4 +54,41 @@ public class RemoteDictLoader {
 
         return words;
     }
+
+    /**
+     *  获取版本号
+     * @param versionId
+     * @return
+     */
+    public String getVersion(int versionId) {
+        String version = "default";
+
+        if (dataSource == null) {
+            return version;
+        }
+
+        String sql = "SELECT version FROM dict_version WHERE id = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+             ps.setInt(1, versionId);
+
+             ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String dv = rs.getString("version");
+
+                if (dv != null && !dv.trim().isEmpty()) {
+                    version = dv;
+                }
+            }
+
+            System.out.printf("[INFO] ✅ Loaded version from DB for id=%s%n", versionId);
+
+        } catch (SQLException e) {
+            System.err.println("[ERROR] Failed to load dict version from DB: " + e.getMessage());
+        }
+
+        return version;
+    }
 }

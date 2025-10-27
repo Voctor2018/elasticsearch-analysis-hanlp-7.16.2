@@ -22,11 +22,11 @@ public class CompileCRFModel {
         // 打印模型前20行
 //        prinent(output);
 
-        RemoteDictLoader loader = new RemoteDictLoader();
-        List<String> dictWords = loader.getRemoteExtWords("DICT");
-
-        System.out.println("=== 从数据库加载的词条 ===");
-        dictWords.forEach(System.out::println);
+//        RemoteDictLoader loader = new RemoteDictLoader();
+//        List<String> dictWords = loader.getRemoteExtWords("DICT");
+//
+//        System.out.println("=== 从数据库加载的词条 ===");
+//        dictWords.forEach(System.out::println);
 
 
         System.out.println("测试完毕");
