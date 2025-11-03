@@ -4,6 +4,7 @@ import com.hankcs.cfg.Configuration;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
+import com.hankcs.utility.RuleBasedSegment;
 import org.apache.lucene.analysis.Tokenizer;
 
 import java.security.AccessController;
@@ -27,6 +28,7 @@ public class TokenizerBuilder {
      */
     public static Tokenizer tokenizer(Segment segment, Configuration configuration) {
         Segment seg = segment(segment, configuration);
+
         return AccessController.doPrivileged((PrivilegedAction<HanLPTokenizer>)() -> new HanLPTokenizer(seg, configuration));
     }
 
@@ -41,16 +43,22 @@ public class TokenizerBuilder {
         if (!configuration.isEnableCustomConfig()) {
             return segment.enableOffset(true);
         }
+
         segment.enableIndexMode(configuration.isEnableIndexMode())
-            .enableNumberQuantifierRecognize(configuration.isEnableNumberQuantifierRecognize())
-            .enableCustomDictionary(configuration.isEnableCustomDictionary())
-            .enableTranslatedNameRecognize(configuration.isEnableTranslatedNameRecognize())
-            .enableJapaneseNameRecognize(configuration.isEnableJapaneseNameRecognize())
-            .enableOrganizationRecognize(configuration.isEnableOrganizationRecognize())
-            .enablePlaceRecognize(configuration.isEnablePlaceRecognize())
-            .enableNameRecognize(configuration.isEnableNameRecognize())
-            .enablePartOfSpeechTagging(configuration.isEnablePartOfSpeechTagging())
-            .enableOffset(configuration.isEnableOffset());
+                .enableNumberQuantifierRecognize(configuration.isEnableNumberQuantifierRecognize())
+                .enableCustomDictionary(configuration.isEnableCustomDictionary())
+                .enableTranslatedNameRecognize(configuration.isEnableTranslatedNameRecognize())
+                .enableJapaneseNameRecognize(configuration.isEnableJapaneseNameRecognize())
+                .enableOrganizationRecognize(configuration.isEnableOrganizationRecognize())
+                .enablePlaceRecognize(configuration.isEnablePlaceRecognize())
+                .enableNameRecognize(configuration.isEnableNameRecognize())
+                .enablePartOfSpeechTagging(configuration.isEnablePartOfSpeechTagging())
+                .enableOffset(configuration.isEnableOffset())
+                .enableCustomDictionaryForcing(configuration.isEnableCustomDictionaryForcing());
+
+        Segment wrapped = new RuleBasedSegment(segment)
+                .enableRuleBasedSegment(configuration.isEnableRuleBasedSegment());
+
         if (configuration.isEnableTraditionalChineseMode()) {
             return new Segment() {
                 @Override
@@ -59,6 +67,6 @@ public class TokenizerBuilder {
                 }
             };
         }
-        return segment;
+        return wrapped;
     }
 }

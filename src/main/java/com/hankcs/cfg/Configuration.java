@@ -49,6 +49,11 @@ public class Configuration {
 
     private boolean enableCustomConfig;
 
+    private boolean enableCustomDictionaryForcing;
+
+    // 是否启用基于规则的分词器
+    private boolean enableRuleBasedSegment;
+
     @Inject
     public Configuration(Environment env, Settings settings) {
         this.environment = env;
@@ -69,6 +74,8 @@ public class Configuration {
         this.enableNormalization = settings.get("enable_normalization", "false").equals("true");
         this.enableOffset = settings.get("enable_offset", "true").equals("true");
         this.enableCustomConfig = settings.get("enable_custom_config", "false").equals("true");
+        this.enableCustomDictionaryForcing = settings.get("enable_custom_dictionary_forcing", "false").equals("true");
+        this.enableRuleBasedSegment = settings.get("enable_rule_based_segment", "false").equals("true");
         Dictionary.initial(this);
     }
 
@@ -221,6 +228,26 @@ public class Configuration {
 
     public Configuration enableCustomConfig(boolean enableCustomConfig) {
         this.enableCustomConfig = enableCustomConfig;
+        return this;
+    }
+
+    //
+    public boolean isEnableCustomDictionaryForcing() {
+        return enableCustomDictionaryForcing;
+    }
+
+    public Configuration enableCustomDictionaryForcing(boolean enableCustomDictionaryForcing) {
+        this.enableCustomDictionaryForcing = enableCustomDictionaryForcing;
+        return this;
+    }
+
+    // 是否启用基于规则的分词器
+    public boolean isEnableRuleBasedSegment() {
+        return enableRuleBasedSegment;
+    }
+
+    public Configuration enableRuleBasedSegment(boolean enableRuleBasedSegment) {
+        this.enableRuleBasedSegment = enableRuleBasedSegment;
         return this;
     }
 }
