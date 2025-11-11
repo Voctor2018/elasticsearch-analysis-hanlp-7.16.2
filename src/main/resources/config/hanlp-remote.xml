@@ -4,8 +4,11 @@
     <comment>HanLP Analyzer 扩展配置</comment>
 
     <!--用户可以在这里配置远程扩展字典-->
-<!--    <entry key="remote_ext_dict">words_location</entry>-->
+    <entry key="remote_ext_dict">http://172.16.61.21:8080/dict/dict</entry>
 
     <!--用户可以在这里配置远程扩展停止词字典-->
-<!--    <entry key="remote_ext_stopwords">stop_words_location</entry>-->
+    <entry key="remote_ext_stopwords">http://172.16.61.21:8080/dict/stop</entry>
+
+    <!--远程拓展词版本号查询 172.16.61.21-->
+    <entry key="remote_ext_version_check">http://172.16.61.21:8080/version/check</entry>
 </properties>

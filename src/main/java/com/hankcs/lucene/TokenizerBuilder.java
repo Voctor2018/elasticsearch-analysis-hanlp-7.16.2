@@ -5,6 +5,7 @@ import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
 import com.hankcs.utility.RuleBasedSegment;
+import com.hankcs.utility.SimpleRuleRecognition;
 import org.apache.lucene.analysis.Tokenizer;
 
 import java.security.AccessController;
@@ -56,8 +57,17 @@ public class TokenizerBuilder {
                 .enableOffset(configuration.isEnableOffset())
                 .enableCustomDictionaryForcing(configuration.isEnableCustomDictionaryForcing());
 
+
+        SimpleRuleRecognition.RuleConfig ruleConfig = new SimpleRuleRecognition.RuleConfig();
+        ruleConfig.enableMoneyRule = configuration.isEnableMoneyRuleBasedSegment(); // 识别金额
+        ruleConfig.enableDateRule = configuration.isEnableDateRuleBasedSegment();   // 识别日期
+        ruleConfig.enableEnglishRule = configuration.isEnableEnglishRuleBasedSegment(); // 识别英文词
+        ruleConfig.enablePercentRule = configuration.isEnablePercentRuleBasedSegment(); // 识别百分比
+        ruleConfig.enableInterventionRule = configuration.isEnableInterventionRuleBasedSegment(); // 启用自定义替换
         Segment wrapped = new RuleBasedSegment(segment)
-                .enableRuleBasedSegment(configuration.isEnableRuleBasedSegment());
+                .enableRuleBasedSegment(configuration.isEnableRuleBasedSegment())
+                .BasedSegmentRuleConfig(ruleConfig);
+
 
         if (configuration.isEnableTraditionalChineseMode()) {
             return new Segment() {

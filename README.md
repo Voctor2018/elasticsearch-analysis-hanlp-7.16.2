@@ -169,23 +169,29 @@ POST http://localhost:9200/twitter2/_analyze
 
 HanLP在提供了各类分词方式的基础上，也提供了一系列的分词配置，分词插件也提供了相关的分词配置，我们可以在通过如下配置来自定义自己的分词器：
 
-| Config                               | Elastic version     |
-| :----------------------------------- | :------------------ |
-| enable_custom_config                 | 是否开启自定义配置    |
-| enable_index_mode                    | 是否是索引分词        |
-| enable_number_quantifier_recognize   | 是否识别数字和量词    |
-| enable_custom_dictionary             | 是否加载用户词典      |
-| enable_translated_name_recognize     | 是否识别音译人名      |
-| enable_japanese_name_recognize       | 是否识别日本人名      |
-| enable_organization_recognize        | 是否识别机构         |
-| enable_place_recognize               | 是否识别地名         |
-| enable_name_recognize                | 是否识别中国人名      | 
-| enable_traditional_chinese_mode      | 是否开启繁体中文      |
-| enable_stop_dictionary               | 是否启用停用词        |
-| enable_part_of_speech_tagging        | 是否开启词性标注      |
-| enable_remote_dict                   | 是否开启远程词典      |
-| enable_normalization                 | 是否执行字符正规化    |
-| enable_offset                        | 是否计算偏移量        |
+| Config                                             | Elastic version |
+|:---------------------------------------------------|:----------------|
+| enable_custom_config                               | 是否开启自定义配置       |
+| enable_index_mode                                  | 是否是索引分词         |
+| enable_number_quantifier_recognize                 | 是否识别数字和量词       |
+| enable_custom_dictionary                           | 是否加载用户词典        |
+| enable_translated_name_recognize                   | 是否识别音译人名        |
+| enable_japanese_name_recognize                     | 是否识别日本人名        |
+| enable_organization_recognize                      | 是否识别机构          |
+| enable_place_recognize                             | 是否识别地名          |
+| enable_name_recognize                              | 是否识别中国人名        | 
+| enable_traditional_chinese_mode                    | 是否开启繁体中文        |
+| enable_stop_dictionary                             | 是否启用停用词         |
+| enable_part_of_speech_tagging                      | 是否开启词性标注        |
+| enable_remote_dict                                 | 是否开启远程词典        |
+| enable_normalization                               | 是否执行字符正规化       |
+| enable_offset                                      | 是否计算偏移量         |
+| enable_rule_based_segment                          | 是否启动自定义规则       |
+| enable_money_rule_based_segment                    | 是否启动金钱自定义规则     |
+| enable_date_rule_based_segment                     | 是否启动日期自定义规则     |
+| enable_english_rule_based_segment                  | 是否启动英文自定义规则     |
+| enable_percent_rule_based_segment                  | 是否启动百分比自定义规则    |
+| enable_intervention_rule_based_segment             | 是否启动干预词库规则      |
 
 注意： 如果要采用如上配置配置自定义分词，需要设置enable_custom_config为true
 

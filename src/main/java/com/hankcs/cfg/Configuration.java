@@ -54,6 +54,12 @@ public class Configuration {
     // 是否启用基于规则的分词器
     private boolean enableRuleBasedSegment;
 
+    private boolean enableMoneyRule; // 识别金额
+    private boolean enableDateRule;   // 识别日期
+    private boolean enableEnglishRule; // 识别英文词
+    private boolean enablePercentRule; // 识别百分比
+    private boolean enableInterventionRule; // 启用自定义替换
+
     @Inject
     public Configuration(Environment env, Settings settings) {
         this.environment = env;
@@ -76,6 +82,11 @@ public class Configuration {
         this.enableCustomConfig = settings.get("enable_custom_config", "false").equals("true");
         this.enableCustomDictionaryForcing = settings.get("enable_custom_dictionary_forcing", "false").equals("true");
         this.enableRuleBasedSegment = settings.get("enable_rule_based_segment", "false").equals("true");
+        this.enableMoneyRule = settings.get("enable_money_rule_based_segment", "false").equals("true");
+        this.enableDateRule = settings.get("enable_date_rule_based_segment", "false").equals("true");
+        this.enableEnglishRule = settings.get("enable_english_rule_based_segment", "false").equals("true");
+        this.enablePercentRule = settings.get("enable_percent_rule_based_segment", "false").equals("true");
+        this.enableInterventionRule = settings.get("enable_intervention_rule_based_segment", "false").equals("true");
         Dictionary.initial(this);
     }
 
@@ -249,5 +260,25 @@ public class Configuration {
     public Configuration enableRuleBasedSegment(boolean enableRuleBasedSegment) {
         this.enableRuleBasedSegment = enableRuleBasedSegment;
         return this;
+    }
+
+    public boolean isEnableMoneyRuleBasedSegment() {
+        return enableMoneyRule;
+    }
+
+    public boolean isEnableDateRuleBasedSegment() {
+        return enableDateRule;
+    }
+
+    public boolean isEnablePercentRuleBasedSegment() {
+        return enablePercentRule;
+    }
+
+    public boolean isEnableInterventionRuleBasedSegment() {
+        return enableInterventionRule;
+    }
+
+    public boolean isEnableEnglishRuleBasedSegment() {
+        return enableEnglishRule;
     }
 }

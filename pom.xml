@@ -148,10 +148,8 @@
   <name>analysis-hanlp</name>
 
   <properties>
-    <elasticsearch.assembly.descriptor>${project.basedir}/src/main/assemblies/plugin.xml
-    </elasticsearch.assembly.descriptor>
-    <elasticsearch.plugin.classname>org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin
-    </elasticsearch.plugin.classname>
+    <elasticsearch.assembly.descriptor>${project.basedir}/src/main/assemblies/plugin.xml</elasticsearch.assembly.descriptor>
+    <elasticsearch.plugin.classname>org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin</elasticsearch.plugin.classname>
     <elasticsearch.plugin.name>analysis-hanlp</elasticsearch.plugin.name>
     <elasticsearch.version>6.8.23</elasticsearch.version>
     <java.source.version>8</java.source.version>
