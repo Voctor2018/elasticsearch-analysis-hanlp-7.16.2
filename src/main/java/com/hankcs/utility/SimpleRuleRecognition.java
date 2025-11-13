@@ -279,6 +279,10 @@ public class SimpleRuleRecognition {
          * 是否开启同义词替换
          */
         public boolean enableInterventionRule = false;
+        /**
+         * 是否开启地名干预
+         */
+        public boolean enablePlaceRule = false;
     }
 
     // 结构化识别正则
@@ -314,6 +318,10 @@ public class SimpleRuleRecognition {
             while (englishMatcher.find()) spans.add(new Span(englishMatcher.start(), englishMatcher.end(), Nature.nz));
         }
 
+        if (config.enablePlaceRule) {
+            rebuildTerms(fullText,termList);
+        }
+
         // 自定义干预规则
         if (config.enableInterventionRule) {
             spans.addAll(buildInterventionSpans(fullText));
@@ -325,108 +333,6 @@ public class SimpleRuleRecognition {
             termList.addAll(newList);
         }
     }
-
-//    private static List<Term> rebuildSelective(List<Term> oldList, String fullText, List<Span> spans) {
-//        List<Term> result = new ArrayList<>();
-//        if (oldList == null || oldList.isEmpty()) return result;
-//
-//        // 1. 合并重叠或相邻的 spans（按字符索引）
-//        if (spans == null) spans = new ArrayList<>();
-//        spans.sort(Comparator.comparingInt(s -> s.start));
-//        List<Span> mergedSpans = new ArrayList<>();
-//
-//        // 交叉取并集
-//        for (Span s : spans) {
-//            if (mergedSpans.isEmpty()) {
-//                mergedSpans.add(new Span(s.start, s.end, s.nature));
-//                continue;
-//            }
-//            Span last = mergedSpans.get(mergedSpans.size() - 1);
-//            if (s.start < last.end) {
-//                // overlap or contiguous -> merge; when natures differ, prefer s.nature (规则优先)
-//                last.end = Math.max(last.end, s.end);
-//                last.nature = s.nature != null ? s.nature : last.nature;
-//            } else {
-//                mergedSpans.add(new Span(s.start, s.end, s.nature));
-//            }
-//        }
-//
-//        // 2. 计算每个原始 term 在 fullText 中的字符区间（start, end）
-//        int cursor = 0;
-//        class TokenSpan { int start, end; Term term; }
-//        List<TokenSpan> tokenSpans = new ArrayList<>();
-//        for (Term t : oldList) {
-//            int len = t.word == null ? 0 : t.word.length();
-//            TokenSpan ts = new TokenSpan();
-//            ts.start = cursor;
-//            ts.end = cursor + len;
-//            ts.term = t;
-//            tokenSpans.add(ts);
-//            cursor += len;
-//        }
-//
-//        // 3. 遍历 tokenSpans，用 mergedSpans 覆盖重叠片段
-//        int tokenIdx = 0;
-//        int spanIdx = 0;
-//        while (tokenIdx < tokenSpans.size()) {
-//            TokenSpan ts = tokenSpans.get(tokenIdx);
-//
-//            // 如果没有更多 span，直接把剩余 tokens 全部加入
-//            if (spanIdx >= mergedSpans.size()) {
-//                result.add(ts.term);
-//                tokenIdx++;
-//                continue;
-//            }
-//
-//            Span span = mergedSpans.get(spanIdx);
-//
-//            // 如果当前 token 在 span 之前（不重叠）
-//            if (ts.end <= span.start) {
-//                result.add(ts.term);
-//                tokenIdx++;
-//                continue;
-//            }
-//
-//            // 如果当前 token 在 span 之后（说明某些 span 没覆盖任何 token -> skip span）
-//            if (ts.start >= span.end) {
-//                spanIdx++;
-//                continue;
-//            }
-//
-//            // 否则 token 与 span 有重叠：我们需要把所有与该 span 有重叠的 token 合并成一个新 Term
-//            int mergeStartChar = span.start;
-//            int mergeEndChar = span.end;
-//            Nature mergeNature = span.nature;
-//
-//            // advance tokenIdx 消耗所有与 span 重叠的 token
-//            int consumeIdx = tokenIdx;
-//            while (consumeIdx < tokenSpans.size() && tokenSpans.get(consumeIdx).start < mergeEndChar) {
-//                mergeEndChar = Math.max(mergeEndChar, tokenSpans.get(consumeIdx).end); // 保证覆盖
-//                consumeIdx++;
-//            }
-//
-//            // 构造合并字符串（注意边界安全）
-//            String mergedWord;
-//            int textLen = fullText.length();
-//            int s = Math.max(0, Math.min(mergeStartChar, textLen));
-//            int e = Math.max(0, Math.min(mergeEndChar, textLen));
-//            mergedWord = fullText.substring(s, e);
-//
-//            // 创建新 Term，使用规则提供的 nature（若为 null 则回退为 nz）
-//            Nature nat = mergeNature != null ? mergeNature : Nature.nz;
-//            Term mergedTerm = new Term(mergedWord, nat);
-//
-//            result.add(mergedTerm);
-//
-//            // 将 tokenIdx 移动到已消费位置
-//            tokenIdx = consumeIdx;
-//
-//            // span 处理完毕，移动到下一个 span
-//            spanIdx++;
-//        }
-//
-//        return result;
-//    }
 
     private static List<Term> rebuildSelective(List<Term> oldList, String fullText, List<Span> spans) {
         List<Term> result = new ArrayList<>();
@@ -609,6 +515,83 @@ public class SimpleRuleRecognition {
         }
 
         return spans;
+    }
+
+    /**
+     * 按照span机制对文本进行智能干预（地名、地址类优化）
+     */
+    private static List<Span> applyInterventionSpans(String fullText, List<Span> spans) {
+        List<Span> adjusted = new ArrayList<>();
+
+        // 常见地名结构匹配
+        Pattern fullRoadPattern = Pattern.compile("[\\u4e00-\\u9fa5]{2,}(?:东|西|南|北)?(路|街|大道|巷|弄|村|镇|区|园|厂|社|部|局)$");
+//        Pattern cityAreaPattern = Pattern.compile("([\\u4e00-\\u9fa5]{2,})(县|市|省|镇|区|乡|村|店|厂|路|园|房|屯|社|部|局|园区|市区)$");
+        Pattern cityAreaPattern = Pattern.compile("([\\u4e00-\\u9fa5]{2,})(园区|市区)$");
+
+        int index = 0;
+        while (index < spans.size()) {
+            Span span = spans.get(index);
+            String word = fullText.substring(span.start, span.end);
+
+            // ① 匹配类似“苏州市区” → “苏州/ns” + “市区/s”
+            Matcher m1 = cityAreaPattern.matcher(word);
+            if (m1.matches()) {
+                String city = m1.group(1);
+                int split = span.start + city.length();
+                adjusted.add(new Span(span.start, split, Nature.ns)); // 城市
+                adjusted.add(new Span(split, span.end, Nature.s));    // 市区
+                index++;
+                continue;
+            }
+
+            // ② 匹配类似“人民西路”、“中山大道” → 整体 ns
+            Matcher m2 = fullRoadPattern.matcher(word);
+            if (m2.matches()) {
+                adjusted.add(new Span(span.start, span.end, Nature.ns));
+                index++;
+                continue;
+            }
+
+            // ③ 如果当前span + 下一个span 组成了地名（例如 “人民西” + “路”）
+            if (index + 1 < spans.size()) {
+                Span next = spans.get(index + 1);
+                String combined = fullText.substring(span.start, next.end);
+                Matcher m3 = fullRoadPattern.matcher(combined);
+                if (m3.matches()) {
+                    adjusted.add(new Span(span.start, next.end, Nature.ns));
+                    index += 2;
+                    continue;
+                }
+            }
+
+            // 默认保留原结果
+            adjusted.add(span);
+            index++;
+        }
+
+        return adjusted;
+    }
+
+    /**
+     * 主调用逻辑（示例）
+     */
+    private static void rebuildTerms(String fullText, List<Term> termList) {
+        // Step1: 将Term转为Span
+        List<Span> spans = new ArrayList<>();
+        int offset = 0;
+        for (Term t : termList) {
+            spans.add(new Span(offset, offset + t.word.length(), t.nature));
+            offset += t.word.length();
+        }
+
+        // Step2: 应用智能干预
+        List<Span> adjusted = applyInterventionSpans(fullText, spans);
+
+        // Step3: rebuild termList
+        termList.clear();
+        for (Span span : adjusted) {
+            termList.add(new Term(fullText.substring(span.start, span.end), span.nature));
+        }
     }
 }
 

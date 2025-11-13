@@ -59,6 +59,7 @@ public class Configuration {
     private boolean enableEnglishRule; // 识别英文词
     private boolean enablePercentRule; // 识别百分比
     private boolean enableInterventionRule; // 启用自定义替换
+    private boolean enablePlaceRule; // 启用地区分词
 
     @Inject
     public Configuration(Environment env, Settings settings) {
@@ -87,6 +88,7 @@ public class Configuration {
         this.enableEnglishRule = settings.get("enable_english_rule_based_segment", "false").equals("true");
         this.enablePercentRule = settings.get("enable_percent_rule_based_segment", "false").equals("true");
         this.enableInterventionRule = settings.get("enable_intervention_rule_based_segment", "false").equals("true");
+        this.enablePlaceRule = settings.get("enable_place_rule_based_segment", "false").equals("true");
         Dictionary.initial(this);
     }
 
@@ -280,5 +282,9 @@ public class Configuration {
 
     public boolean isEnableEnglishRuleBasedSegment() {
         return enableEnglishRule;
+    }
+
+    public boolean isEnablePlaceRuleBasedSegment() {
+        return enablePlaceRule;
     }
 }

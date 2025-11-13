@@ -39,8 +39,13 @@ public class CompileCRFModel {
 
         String[] texts = {
 //                "广西壮族自治区南宁市江南区沙井街道邕津村村民委员会",
-//                "江苏省苏州市工业园区"
-                "NovaCode是位于江苏省苏州市工业园区的一家上市公司，在2023年12月12日销售部在苏州市区收入500元,导致OpenAIChatGPT、Nova-Code股价大涨。"
+                "苏州市区人民西路",
+                "南京市鼓楼区中山路",
+                "北京市海淀区中关村南大街",
+                "香港特别行政区",
+                "新疆维吾尔族自治区",
+                "江苏省苏州市工业园区",
+//                    "NovaCode是位于江苏省苏州市工业园区的一家上市公司，在2023年12月12日销售部在苏州市区人民西路观前街收入500元,导致OpenAIChatGPT、Nova-Code股价大涨。"
         };
 
         // 分词调用方案一
@@ -63,10 +68,12 @@ public class CompileCRFModel {
         ruleConfig.enableDateRule = true;
         ruleConfig.enableEnglishRule = true;
         ruleConfig.enablePercentRule = true;
-        ruleConfig.enableInterventionRule = true; // 启用自定义替换
+        ruleConfig.enableInterventionRule = true; // 是否开启同义词替换
+        ruleConfig.enablePlaceRule = true; // 启用自定义替换
 
         RuleBasedSegment segment = new RuleBasedSegment(baseSegment)
-                .enableRuleBasedSegment(true).BasedSegmentRuleConfig(ruleConfig);
+                .enableRuleBasedSegment(true)
+                .BasedSegmentRuleConfig(ruleConfig);
 
         for(String s : texts){
             List<Term> terms = segment.seg(s);

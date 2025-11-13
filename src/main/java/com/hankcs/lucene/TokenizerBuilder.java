@@ -64,6 +64,7 @@ public class TokenizerBuilder {
         ruleConfig.enableEnglishRule = configuration.isEnableEnglishRuleBasedSegment(); // 识别英文词
         ruleConfig.enablePercentRule = configuration.isEnablePercentRuleBasedSegment(); // 识别百分比
         ruleConfig.enableInterventionRule = configuration.isEnableInterventionRuleBasedSegment(); // 启用自定义替换
+        ruleConfig.enablePlaceRule = configuration.isEnablePlaceRuleBasedSegment(); // 启用地区分词
         Segment wrapped = new RuleBasedSegment(segment)
                 .enableRuleBasedSegment(configuration.isEnableRuleBasedSegment())
                 .BasedSegmentRuleConfig(ruleConfig);
