@@ -14,7 +14,7 @@ public class HanlpConfig {
     private static final Logger logger = LoggerFactory.getLogger(HanlpConfig.class);
     private static final Properties props = new Properties();
     private static boolean loaded = false;
-    private static final boolean debug = true;
+    private static final boolean debug = false;
 
     /**
      * 初始化或重新加载配置文件

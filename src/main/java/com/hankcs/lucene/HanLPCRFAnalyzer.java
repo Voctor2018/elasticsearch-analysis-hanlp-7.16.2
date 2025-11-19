@@ -6,6 +6,8 @@ import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.model.CRFNERecognizerInstance;
 import com.hankcs.model.CRFPOSTaggerInstance;
 import com.hankcs.model.CRFSegmenterInstance;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 
 import java.security.AccessController;
@@ -18,7 +20,7 @@ import java.security.PrivilegedAction;
  * Create: 2021-01-30 01:22
  */
 public class HanLPCRFAnalyzer extends Analyzer {
-
+    private static final Logger logger = LogManager.getLogger(HanLPCRFAnalyzer.class);
     /**
      * 分词配置
      */
@@ -27,6 +29,7 @@ public class HanLPCRFAnalyzer extends Analyzer {
     public HanLPCRFAnalyzer(Configuration configuration) {
         super();
         this.configuration = configuration;
+        logger.info("HanLPCRFAnalyzer start");
     }
 
     @Override

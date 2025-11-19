@@ -35,6 +35,9 @@ public class Configuration {
 
     private boolean enableNameRecognize;
 
+    /**
+     * 是否开启繁体中文
+     */
     private boolean enableTraditionalChineseMode;
 
     private boolean enableStopDictionary;
@@ -51,44 +54,68 @@ public class Configuration {
 
     private boolean enableCustomDictionaryForcing;
 
-    // 是否启用基于规则的分词器
+    /**
+     * 是否启用基于规则的分词器
+     */
     private boolean enableRuleBasedSegment;
 
-    private boolean enableMoneyRule; // 识别金额
-    private boolean enableDateRule;   // 识别日期
-    private boolean enableEnglishRule; // 识别英文词
-    private boolean enablePercentRule; // 识别百分比
-    private boolean enableInterventionRule; // 启用自定义替换
-    private boolean enablePlaceRule; // 启用地区分词
+    /**
+     * 识别金额
+     */
+    private boolean enableMoneyRule;
+
+    /**
+     * 识别日期
+     */
+    private boolean enableDateRule;
+    /**
+     * 识别英文词
+     */
+    private boolean enableEnglishRule;
+    /**
+     * 识别百分比
+     */
+    private boolean enablePercentRule;
+    /**
+     * 启用自定义替换
+     */
+    private boolean enableInterventionRule;
+    /**
+     * 启用地区分词
+     */
+    private boolean enablePlaceRule;
 
     @Inject
     public Configuration(Environment env, Settings settings) {
         this.environment = env;
         this.settings = settings;
-        this.enablePorterStemming = settings.get("enable_porter_stemming", "false").equals("true");
-        this.enableIndexMode = settings.get("enable_index_mode", "false").equals("true");
-        this.enableNumberQuantifierRecognize = settings.get("enable_number_quantifier_recognize", "false").equals("true");
-        this.enableCustomDictionary = settings.get("enable_custom_dictionary", "true").equals("true");
-        this.enableTranslatedNameRecognize = settings.get("enable_translated_name_recognize", "true").equals("true");
-        this.enableJapaneseNameRecognize = settings.get("enable_japanese_name_recognize", "false").equals("true");
-        this.enableOrganizationRecognize = settings.get("enable_organization_recognize", "false").equals("true");
-        this.enablePlaceRecognize = settings.get("enable_place_recognize", "false").equals("true");
-        this.enableNameRecognize = settings.get("enable_name_recognize", "true").equals("true");
-        this.enableTraditionalChineseMode = settings.get("enable_traditional_chinese_mode", "false").equals("true");
-        this.enableStopDictionary = settings.get("enable_stop_dictionary", "false").equals("true");
-        this.enablePartOfSpeechTagging = settings.get("enable_part_of_speech_tagging", "false").equals("true");
-        this.enableRemoteDict = settings.get("enable_remote_dict", "true").equals("true");
-        this.enableNormalization = settings.get("enable_normalization", "false").equals("true");
-        this.enableOffset = settings.get("enable_offset", "true").equals("true");
-        this.enableCustomConfig = settings.get("enable_custom_config", "false").equals("true");
-        this.enableCustomDictionaryForcing = settings.get("enable_custom_dictionary_forcing", "false").equals("true");
-        this.enableRuleBasedSegment = settings.get("enable_rule_based_segment", "false").equals("true");
-        this.enableMoneyRule = settings.get("enable_money_rule_based_segment", "false").equals("true");
-        this.enableDateRule = settings.get("enable_date_rule_based_segment", "false").equals("true");
-        this.enableEnglishRule = settings.get("enable_english_rule_based_segment", "false").equals("true");
-        this.enablePercentRule = settings.get("enable_percent_rule_based_segment", "false").equals("true");
-        this.enableInterventionRule = settings.get("enable_intervention_rule_based_segment", "false").equals("true");
-        this.enablePlaceRule = settings.get("enable_place_rule_based_segment", "false").equals("true");
+
+        if(settings != null){
+            this.enablePorterStemming = settings.get("enable_porter_stemming", "false").equals("true");
+            this.enableIndexMode = settings.get("enable_index_mode", "false").equals("true");
+            this.enableNumberQuantifierRecognize = settings.get("enable_number_quantifier_recognize", "false").equals("true");
+            this.enableCustomDictionary = settings.get("enable_custom_dictionary", "true").equals("true");
+            this.enableTranslatedNameRecognize = settings.get("enable_translated_name_recognize", "true").equals("true");
+            this.enableJapaneseNameRecognize = settings.get("enable_japanese_name_recognize", "false").equals("true");
+            this.enableOrganizationRecognize = settings.get("enable_organization_recognize", "false").equals("true");
+            this.enablePlaceRecognize = settings.get("enable_place_recognize", "false").equals("true");
+            this.enableNameRecognize = settings.get("enable_name_recognize", "true").equals("true");
+            this.enableTraditionalChineseMode = settings.get("enable_traditional_chinese_mode", "false").equals("true");
+            this.enableStopDictionary = settings.get("enable_stop_dictionary", "false").equals("true");
+            this.enablePartOfSpeechTagging = settings.get("enable_part_of_speech_tagging", "false").equals("true");
+            this.enableRemoteDict = settings.get("enable_remote_dict", "true").equals("true");
+            this.enableNormalization = settings.get("enable_normalization", "false").equals("true");
+            this.enableOffset = settings.get("enable_offset", "true").equals("true");
+            this.enableCustomConfig = settings.get("enable_custom_config", "false").equals("true");
+            this.enableCustomDictionaryForcing = settings.get("enable_custom_dictionary_forcing", "false").equals("true");
+            this.enableRuleBasedSegment = settings.get("enable_rule_based_segment", "false").equals("true");
+            this.enableMoneyRule = settings.get("enable_money_rule_based_segment", "false").equals("true");
+            this.enableDateRule = settings.get("enable_date_rule_based_segment", "false").equals("true");
+            this.enableEnglishRule = settings.get("enable_english_rule_based_segment", "false").equals("true");
+            this.enablePercentRule = settings.get("enable_percent_rule_based_segment", "false").equals("true");
+            this.enableInterventionRule = settings.get("enable_intervention_rule_based_segment", "false").equals("true");
+            this.enablePlaceRule = settings.get("enable_place_rule_based_segment", "false").equals("true");
+        }
         Dictionary.initial(this);
     }
 

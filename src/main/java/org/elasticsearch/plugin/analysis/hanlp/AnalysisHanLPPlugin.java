@@ -55,10 +55,11 @@ public class AnalysisHanLPPlugin extends Plugin implements AnalysisPlugin {
 
     @Override
     public Map<String, AnalysisModule.AnalysisProvider<TokenizerFactory>> getTokenizers() {
-
+        logger.info("=====call getTokenizers=====");
         Map<String, AnalysisModule.AnalysisProvider<TokenizerFactory>> extra = new HashMap<>();
 
         extra.put("hanlp", HanLPTokenizerFactory::getHanLPTokenizerFactory);
+
         extra.put("hanlp_standard", HanLPTokenizerFactory::getHanLPStandardTokenizerFactory);
         extra.put("hanlp_index", HanLPTokenizerFactory::getHanLPIndexTokenizerFactory);
 
@@ -74,6 +75,8 @@ public class AnalysisHanLPPlugin extends Plugin implements AnalysisPlugin {
 
     @Override
     public Map<String, AnalysisModule.AnalysisProvider<AnalyzerProvider<? extends Analyzer>>> getAnalyzers() {
+        logger.info("=====call getAnalyzers=====");
+
         Map<String, AnalysisModule.AnalysisProvider<AnalyzerProvider<? extends Analyzer>>> extra = new HashMap<>();
 
         extra.put("hanlp", HanLPAnalyzerProvider::getHanLPAnalyzerProvider);
@@ -86,6 +89,8 @@ public class AnalysisHanLPPlugin extends Plugin implements AnalysisPlugin {
         extra.put("hanlp_n_short", HanLPAnalyzerProvider::getHanLPNShortAnalyzerProvider);
         extra.put("hanlp_dijkstra", HanLPAnalyzerProvider::getHanLPDijkstraAnalyzerProvider);
         extra.put("hanlp_speed", HanLPAnalyzerProvider::getHanLPSpeedAnalyzerProvider);
+
+        logger.info("=====hanlp插件初始化成功=====", extra);
 
         return extra;
     }

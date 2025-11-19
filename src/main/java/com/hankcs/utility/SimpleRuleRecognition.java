@@ -524,7 +524,7 @@ public class SimpleRuleRecognition {
         List<Span> adjusted = new ArrayList<>();
 
         // 常见地名结构匹配
-        Pattern fullRoadPattern = Pattern.compile("[\\u4e00-\\u9fa5]{2,}(?:东|西|南|北)?(路|街|大道|巷|弄|村|镇|区|园|厂|社|部|局)$");
+        Pattern fullRoadPattern = Pattern.compile("[\\u4e00-\\u9fa5]{2,}(?:东|西|南|北)(路|街|大道|巷|弄|村|镇|区|园|厂|社|部|局)$");
 //        Pattern cityAreaPattern = Pattern.compile("([\\u4e00-\\u9fa5]{2,})(县|市|省|镇|区|乡|村|店|厂|路|园|房|屯|社|部|局|园区|市区)$");
         Pattern cityAreaPattern = Pattern.compile("([\\u4e00-\\u9fa5]{2,})(园区|市区)$");
 
@@ -572,9 +572,6 @@ public class SimpleRuleRecognition {
         return adjusted;
     }
 
-    /**
-     * 主调用逻辑（示例）
-     */
     private static void rebuildTerms(String fullText, List<Term> termList) {
         // Step1: 将Term转为Span
         List<Span> spans = new ArrayList<>();

@@ -6,6 +6,8 @@ import com.hankcs.hanlp.corpus.tag.Nature;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
 import com.hankcs.hanlp.utility.TextUtility;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
@@ -21,6 +23,7 @@ import java.security.PrivilegedAction;
  * Tokenizer，抄袭ansj的
  */
 public class HanLPTokenizer extends Tokenizer {
+    private static final Logger logger = LogManager.getLogger(HanLPTokenizer.class);
     /**
      * 当前词
      */
@@ -61,6 +64,7 @@ public class HanLPTokenizer extends Tokenizer {
      */
     public HanLPTokenizer(Segment segment, Configuration configuration) {
         this.configuration = configuration;
+        logger.info("### final segment = " + segment.getClass());
         this.segment = new SegmentWrapper(this.input, segment, configuration);
     }
 

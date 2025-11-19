@@ -1,11 +1,14 @@
 package com.hankcs.lucene;
 
 import com.hankcs.cfg.Configuration;
+import com.hankcs.dic.CustomDictionaryCheck;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
 import com.hankcs.utility.RuleBasedSegment;
 import com.hankcs.utility.SimpleRuleRecognition;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Tokenizer;
 
 import java.security.AccessController;
@@ -20,6 +23,8 @@ import java.util.List;
  */
 public class TokenizerBuilder {
 
+    private static final Logger logger = LogManager.getLogger(TokenizerBuilder.class);
+
     /**
      * 构建Tokenizer
      *
@@ -28,7 +33,9 @@ public class TokenizerBuilder {
      * @return 返回tokenizer
      */
     public static Tokenizer tokenizer(Segment segment, Configuration configuration) {
+        logger.info("===========tokenizer start===========");
         Segment seg = segment(segment, configuration);
+        logger.info("===========Segment end===========");
 
         return AccessController.doPrivileged((PrivilegedAction<HanLPTokenizer>)() -> new HanLPTokenizer(seg, configuration));
     }
@@ -42,21 +49,20 @@ public class TokenizerBuilder {
      */
     private static Segment segment(Segment segment, Configuration configuration) {
         if (!configuration.isEnableCustomConfig()) {
-            return segment.enableOffset(true);
+            segment.enableOffset(true);
+        } else {
+            segment.enableIndexMode(configuration.isEnableIndexMode())
+                    .enableNumberQuantifierRecognize(configuration.isEnableNumberQuantifierRecognize())
+                    .enableCustomDictionary(configuration.isEnableCustomDictionary())
+                    .enableTranslatedNameRecognize(configuration.isEnableTranslatedNameRecognize())
+                    .enableJapaneseNameRecognize(configuration.isEnableJapaneseNameRecognize())
+                    .enableOrganizationRecognize(configuration.isEnableOrganizationRecognize())
+                    .enablePlaceRecognize(configuration.isEnablePlaceRecognize())
+                    .enableNameRecognize(configuration.isEnableNameRecognize())
+                    .enablePartOfSpeechTagging(configuration.isEnablePartOfSpeechTagging())
+                    .enableOffset(configuration.isEnableOffset())
+                    .enableCustomDictionaryForcing(configuration.isEnableCustomDictionaryForcing());
         }
-
-        segment.enableIndexMode(configuration.isEnableIndexMode())
-                .enableNumberQuantifierRecognize(configuration.isEnableNumberQuantifierRecognize())
-                .enableCustomDictionary(configuration.isEnableCustomDictionary())
-                .enableTranslatedNameRecognize(configuration.isEnableTranslatedNameRecognize())
-                .enableJapaneseNameRecognize(configuration.isEnableJapaneseNameRecognize())
-                .enableOrganizationRecognize(configuration.isEnableOrganizationRecognize())
-                .enablePlaceRecognize(configuration.isEnablePlaceRecognize())
-                .enableNameRecognize(configuration.isEnableNameRecognize())
-                .enablePartOfSpeechTagging(configuration.isEnablePartOfSpeechTagging())
-                .enableOffset(configuration.isEnableOffset())
-                .enableCustomDictionaryForcing(configuration.isEnableCustomDictionaryForcing());
-
 
         SimpleRuleRecognition.RuleConfig ruleConfig = new SimpleRuleRecognition.RuleConfig();
         ruleConfig.enableMoneyRule = configuration.isEnableMoneyRuleBasedSegment(); // 识别金额
@@ -65,9 +71,10 @@ public class TokenizerBuilder {
         ruleConfig.enablePercentRule = configuration.isEnablePercentRuleBasedSegment(); // 识别百分比
         ruleConfig.enableInterventionRule = configuration.isEnableInterventionRuleBasedSegment(); // 启用自定义替换
         ruleConfig.enablePlaceRule = configuration.isEnablePlaceRuleBasedSegment(); // 启用地区分词
+
         Segment wrapped = new RuleBasedSegment(segment)
-                .enableRuleBasedSegment(configuration.isEnableRuleBasedSegment())
-                .BasedSegmentRuleConfig(ruleConfig);
+                .BasedSegmentRuleConfig(ruleConfig)
+                .enableRuleBasedSegment(configuration.isEnableRuleBasedSegment());
 
 
         if (configuration.isEnableTraditionalChineseMode()) {
@@ -78,6 +85,7 @@ public class TokenizerBuilder {
                 }
             };
         }
+
         return wrapped;
     }
 }

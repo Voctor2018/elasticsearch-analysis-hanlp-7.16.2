@@ -60,11 +60,12 @@ public class Dictionary {
             synchronized (Dictionary.class) {
                 if (singleton == null) {                             // 第二次检查
                     singleton = new Dictionary(configuration);       // 构建单例
-                    singleton.setUp();                               // 初始化词典
+                    singleton.setUp();                              // 初始化词典
+
                     pool.scheduleAtFixedRate(new ExtMonitor(), 10, 60, TimeUnit.SECONDS); // 定期监控本地扩展词典
                     if (configuration.isEnableRemoteDict()) {        // 启用远程词典
                         // 定时触发更新
-                         extractedAtFixedRate();
+//                         extractedAtFixedRate();
 
                         // 手动触发更新 每5秒检查一次版本号
                         pool.scheduleAtFixedRate(new CustomDictionaryCheck(), 5, 10, TimeUnit.SECONDS);

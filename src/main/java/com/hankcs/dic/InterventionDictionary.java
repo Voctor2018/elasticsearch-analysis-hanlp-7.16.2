@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,15 +17,26 @@ import static com.hankcs.hanlp.utility.Predefine.logger;
 
 public class InterventionDictionary {
     public static Map<String, String> interventionMap = new ConcurrentHashMap<>();
-    public final static String path = HanlpConfig.get("IntervetionPath");
+    public final static String filePath = HanlpConfig.get("IntervetionPath");
+    public final static String root = HanlpConfig.get("root");
+    public final static String env = HanlpConfig.get("env");
 
     // 自动加载词典
     static {
         long start = System.currentTimeMillis();
-        if (!load(path)) {
-            throw new IllegalArgumentException("业务干预词典" + path + "加载失败");
+        String finalPath = filePath;
+        if(env != null && !env.equals("dev")) {
+            finalPath = root +"/"+ filePath;
+        }else{
+            finalPath = "src/main/resources/" + filePath;
+        }
+
+        Path path = Paths.get(finalPath).toAbsolutePath();
+
+        if (!load(path.toString())) {
+            throw new IllegalArgumentException("业务干预词典" + finalPath + "加载失败");
         } else {
-            logger.info(path + "加载成功，" + interventionMap.size() + "个词条，耗时" + (
+            logger.info(finalPath + "加载成功，" + interventionMap.size() + "个词条，耗时" + (
                     System.currentTimeMillis() - start) + "ms");
         }
     }

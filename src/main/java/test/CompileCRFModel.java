@@ -7,6 +7,7 @@ import com.hankcs.hanlp.corpus.io.ByteArray;
 import com.hankcs.hanlp.model.crf.CRFLexicalAnalyzer;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
+import com.hankcs.lucene.TokenizerBuilder;
 import com.hankcs.model.CRFSegmenterInstance;
 import com.hankcs.utility.RuleBasedSegment;
 import com.hankcs.utility.SimpleRuleRecognition;
@@ -38,22 +39,23 @@ public class CompileCRFModel {
 
 
         String[] texts = {
-//                "广西壮族自治区南宁市江南区沙井街道邕津村村民委员会",
+                "广西壮族自治区南宁市江南区沙井街道邕津村村民委员会",
                 "苏州市区人民西路",
                 "南京市鼓楼区中山路",
                 "北京市海淀区中关村南大街",
                 "香港特别行政区",
                 "新疆维吾尔族自治区",
                 "江苏省苏州市工业园区",
-//                    "NovaCode是位于江苏省苏州市工业园区的一家上市公司，在2023年12月12日销售部在苏州市区人民西路观前街收入500元,导致OpenAIChatGPT、Nova-Code股价大涨。"
+                "相城区",
+//                "NovaCode是位于江苏省苏州市工业园区的一家上市公司，在2023年12月12日销售部在苏州市区人民西路观前街收入500元,导致OpenAIChatGPT、Nova-Code股价大涨。"
         };
 
         // 分词调用方案一
         HanLP.Config.CRFCWSModelPath = "C:/Users/qichacha/Desktop/wsl/final_model.txt.bin";
         HanLP.Config.CRFPOSModelPath = "C:/Users/qichacha/Desktop/wsl/data-for-1.7.5/data/model/crf/pku199801/pos.txt.bin";
         HanLP.Config.CRFNERModelPath = "C:/Users/qichacha/Desktop/wsl/data-for-1.7.5/data/model/crf/pku199801/ner.txt.bin";
-        Segment baseSegment =  HanLP.newSegment("crf");
-
+        Segment baseSegment =  new CRFLexicalAnalyzer();
+        baseSegment.enableOffset(false);
         baseSegment.enableCustomDictionary(false);  // 关闭用户词典（与 analyzer 默认一致）
         baseSegment.enableNameRecognize(false);    // 禁止人名识别
         baseSegment.enablePlaceRecognize(false);   // 禁止地名识别
@@ -69,7 +71,7 @@ public class CompileCRFModel {
         ruleConfig.enableEnglishRule = true;
         ruleConfig.enablePercentRule = true;
         ruleConfig.enableInterventionRule = true; // 是否开启同义词替换
-        ruleConfig.enablePlaceRule = true; // 启用自定义替换
+        ruleConfig.enablePlaceRule = true;
 
         RuleBasedSegment segment = new RuleBasedSegment(baseSegment)
                 .enableRuleBasedSegment(true)

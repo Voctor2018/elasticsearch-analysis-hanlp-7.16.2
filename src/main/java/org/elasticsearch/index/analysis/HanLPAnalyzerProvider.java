@@ -9,10 +9,13 @@ import com.hankcs.lucene.HanLPNLPAnalyzer;
 import com.hankcs.lucene.HanLPNShortAnalyzer;
 import com.hankcs.lucene.HanLPSpeedAnalyzer;
 import com.hankcs.lucene.HanLPStandardAnalyzer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
+import org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin;
 
 /**
  * Project: elasticsearch-analysis-hanlp
@@ -21,12 +24,26 @@ import org.elasticsearch.index.IndexSettings;
  * Create: 2018-12-14 15:10
  */
 public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyzer> {
+    private static final Logger logger = LogManager.getLogger(HanLPAnalyzerProvider.class);
 
     private final Analyzer analyzer;
 
     public HanLPAnalyzerProvider(IndexSettings indexSettings, Environment env, String name, Settings settings, HanLPType hanLPType) {
         super(indexSettings, name, settings);
         Configuration configuration = new Configuration(env, settings);
+//        logger.info("HanLPAnalyzerProvider name: " + name);
+//        logger.info("hanLPType is: " + hanLPType);
+//
+//        logger.info("===========分割线===========");
+//        logger.info("custom:" + configuration.isEnableRuleBasedSegment());
+//        logger.info("money:" + configuration.isEnableMoneyRuleBasedSegment());
+//        logger.info("Date:" + configuration.isEnableDateRuleBasedSegment());
+//        logger.info("English:" + configuration.isEnableEnglishRuleBasedSegment());
+//        logger.info("Percent:" + configuration.isEnablePercentRuleBasedSegment());
+//        logger.info("Intervention:" + configuration.isEnableInterventionRuleBasedSegment());
+//        logger.info("Place:" + configuration.isEnablePlaceRuleBasedSegment());
+//        logger.info("===========分割线===========");
+
         switch (hanLPType) {
             case HANLP:
                 analyzer = new HanLPAnalyzer(configuration);

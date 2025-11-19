@@ -15,6 +15,8 @@ import com.hankcs.model.CRFSegmenterInstance;
 import com.hankcs.model.PerceptronCWSInstance;
 import com.hankcs.model.PerceptronNERInstance;
 import com.hankcs.model.PerceptronPOSInstance;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Tokenizer;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
@@ -30,6 +32,7 @@ import java.security.PrivilegedAction;
  * Create: 2018-12-14 15:10
  */
 public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
+    private static final Logger logger = LogManager.getLogger(HanLPTokenizerFactory.class);
     /**
      * 分词类型
      */
@@ -43,10 +46,22 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
         super(indexSettings, null, settings);
         this.hanLPType = hanLPType;
         this.configuration = new Configuration(env, settings);
+//        logger.info("HanLPTokenizerFactory settings：" + settings.toString());
+//        logger.info("HanLPTokenizerFactory 初始化配置：" + name);
+//        logger.info("hanLPType is: " + hanLPType);
+//
+//        logger.info("===========分割线===========");
+//        logger.info("custom:" + this.configuration.isEnableRuleBasedSegment());
+//        logger.info("money:" + this.configuration.isEnableMoneyRuleBasedSegment());
+//        logger.info("Date:" + this.configuration.isEnableDateRuleBasedSegment());
+//        logger.info("English:" + this.configuration.isEnableEnglishRuleBasedSegment());
+//        logger.info("Percent:" + this.configuration.isEnablePercentRuleBasedSegment());
+//        logger.info("Intervention:" + this.configuration.isEnableInterventionRuleBasedSegment());
+//        logger.info("Place:" + this.configuration.isEnablePlaceRuleBasedSegment());
+//        logger.info("===========分割线===========");
     }
 
-    public static HanLPTokenizerFactory getHanLPTokenizerFactory(IndexSettings indexSettings, Environment env, String name,
-                                                                 Settings settings) {
+    public static HanLPTokenizerFactory getHanLPTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
         return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.HANLP);
     }
 
